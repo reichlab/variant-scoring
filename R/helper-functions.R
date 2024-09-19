@@ -12,6 +12,19 @@ mn_func <- function(a, b, c, size, theta)
 draw_one_dirichlet <- function(n, alpha)
   as.vector(brms::rdirichlet(n, alpha = alpha))
 
+## make colors transparent, from https://stackoverflow.com/questions/12995683/any-way-to-make-plot-points-in-scatterplot-more-transparent-in-r
+col_r <- function(col, alpha = NULL) {
+  MAX_COL <- 255
+  col_mtx <- t(col2rgb(col, alpha = FALSE))
+
+  if (is.null(alpha)) {
+    rgb(red = col_mtx, maxColorValue = MAX_COL)
+  } else {
+    col_alf <- MAX_COL * alpha
+    rgb(red = col_mtx, alpha = col_alf, maxColorValue = MAX_COL)
+  }
+}
+
 ## define a function to enumerate the sample space of a multinomial
 enumerate_multinomial_sample_space <- function(n){
   ## fix number of categories at 3
@@ -39,7 +52,7 @@ enumerate_multinomial_sample_space <- function(n){
 }
 
 ## define a function to plot the implied multinomial distribution
-plot_implied_multinomial <- function(n, theta, c=NULL){
+plot_implied_multinomial <- function(n, theta, c=NULL, opacity = 0.5){
   ## n the total size of the multinomial
   ## theta vector of probabilities of each category
   ## c optional, observed counts
@@ -78,7 +91,8 @@ plot_implied_multinomial <- function(n, theta, c=NULL){
   AddToTernary(graphics::points,
                dat,
                pch=20,
-               cex = pointSize)
+               cex = pointSize,
+               col = col_r("black", alpha = opacity))
 
   ## add observation to graph
   if(!is.null(c)) {
@@ -90,7 +104,7 @@ plot_implied_multinomial <- function(n, theta, c=NULL){
 }
 
 ## define a function to plot the implied multinomial mixture
-plot_implied_multinomial_mixture <- function(n, thetas, c=NULL){
+plot_implied_multinomial_mixture <- function(n, thetas, c=NULL, opacity = 0.5){
   ## n the total size of the multinomial
   ## theta vector of probabilities of each category
   ## c optional, observed counts
@@ -135,7 +149,8 @@ plot_implied_multinomial_mixture <- function(n, thetas, c=NULL){
   AddToTernary(graphics::points,
                dat,
                pch=20,
-               cex = pointSize)
+               cex = pointSize,
+               col = col_r("black", alpha = opacity))
 
   ## add observation to graph
   if(!is.null(c)) {
@@ -148,7 +163,7 @@ plot_implied_multinomial_mixture <- function(n, thetas, c=NULL){
 
 
 ## define a function to plot a dirichlet multinomial distribution
-plot_dirichlet_multinomial <- function(n, alpha, c=NULL){
+plot_dirichlet_multinomial <- function(n, alpha, c=NULL, opacity = 0.5){
   require(extraDistr)
   ## n the total size of the multinomial
   ## alpha vector of parameters for the Dirichlet
@@ -189,7 +204,8 @@ plot_dirichlet_multinomial <- function(n, alpha, c=NULL){
   AddToTernary(graphics::points,
                dat,
                pch=20,
-               cex = pointSize)
+               cex = pointSize,
+               col = col_r("black", alpha = opacity))
 
   ## add observation to graph
   if(!is.null(c)) {
